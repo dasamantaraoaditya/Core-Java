@@ -15,6 +15,18 @@ public class ThreadsInJava {
 		//Thread created by implementing runnable
 		Thread iri = new Thread(new ImplementingRunnable());
 		iri.start();
+		
+		/* 
+		 * Scenario: Design a user -> printer's model 
+		 */
+		User u1= new User(1,"user 1");
+		User u2= new User(2,"user 2");
+		for(int i=0;i<10;i++){
+			Thread t1 = new Thread(new Printer(i,"Text -"+i, u1));
+			t1.start();
+		}
+		for(int i=0;i<10;i++)
+			new Thread(new Printer(i,"Text -"+i, u2)).start();
 	}
 
 }
@@ -50,3 +62,46 @@ class ImplementingRunnable implements Runnable{
 	}
 }
 
+
+
+class Printer implements Runnable{
+	String text;
+	int id;
+	User u;
+	
+	public Printer(int i, String string, User u) {
+		this.text = string;
+		this.id =i;
+		this.u= u;
+	}
+
+	synchronized void print(){
+		try {
+			if(this.u.id == 1 && this.id ==1)
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("User Details : "+this.u.toString()+", *print:: " +this.text);
+	}
+
+	@Override
+	public void run() {
+		print();
+	}
+}
+
+class User{
+	int id;
+	String name;
+	
+	public User(int i, String string) {
+		this.id = i;
+		this.name = string;
+	}
+
+	@Override
+	public String toString() {
+		return "UserId : "+ this.id+", UserNamse : "+this.name;
+	}
+}
